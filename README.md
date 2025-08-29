@@ -1,3 +1,1 @@
-<p align="center">
-  <img src="assets/foodratings-banner-dark.svg" alt="FoodRatings — Learn in Public" width="100%" />
-</p>
+Connect with me on [LinkedIn](https://www.linkedin.com/in/msjammu/)
