@@ -10,3 +10,5 @@
     <img src="https://img.shields.io/badge/Connect%20on-LinkedIn-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn">
   </a>  
 </p>
+
+check out for content at https://msjammu.github.io/FoodRating/
