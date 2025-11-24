@@ -11,4 +11,4 @@
   </a>  
 </p>
 
-check out for content at [BrightBites](https://msjammu.github.io/BrightBites/)
+Join in AI journey by checking out [BrightBites](https://msjammu.github.io/BrightBites/)
