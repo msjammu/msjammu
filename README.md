@@ -11,4 +11,4 @@
   </a>  
 </p>
 
-check out for content at https://msjammu.github.io/FoodRating/
+check out for content at [https://msjammu.github.io/FoodRating/](https://msjammu.github.io/BrightBites/)
