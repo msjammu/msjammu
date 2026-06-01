@@ -1,39 +1,68 @@
 # Shipping a Real Community Tool in an Afternoon with Spec-Driven AI Pair-Programming
 
+> **A blood drive was wasting slots. I had an afternoon. Here's what actually worked.**
+
 *A field report on using GitHub Copilot's agent mode to take a community problem from a vague description to a deployed tool — with the spec doing most of the heavy lifting.*
 
-**Project:** [Blood Drive Pre-Screening Tool](https://punjabischoolbothell.org/programs/blood-drive/) for the Sikh Center of Seattle (built for [Punjabi School Bothell](https://punjabischoolbothell.org/))
-**Case study:** [Reducing Wasted Slots at a Community Blood Drive](./blood-drive-case-study.md)
-**Stack:** One static HTML file. No build step. No framework. No analytics.
+- **Project:** [Blood Drive Pre-Screening Tool](https://punjabischoolbothell.org/programs/blood-drive/) for the Sikh Center of Seattle (built for [Punjabi School Bothell](https://punjabischoolbothell.org/))
+- **Case study:** [Reducing Wasted Slots at a Community Blood Drive](./blood-drive-case-study.md)
+- **Stack:** One static HTML file. No build step. No framework. No analytics.
 
 ---
 
 ## TL;DR
 
-Our community blood drive kept losing appointment slots to donors who were ineligible on the day of donation — most often because of recent international travel. In an afternoon, working with GitHub Copilot in agent mode, we:
+Our community blood drive kept losing appointment slots to donors who were ineligible on the day of donation — most often because of recent international travel. In an afternoon, working with GitHub Copilot in agent mode, I:
 
 1. Wrote a short spec describing the problem and the smallest useful solution.
-2. Pruned the spec down once we found the partner ([Bloodworks Northwest](https://bloodworksnw.org/eligibility-checker)) already publishes a full eligibility checklist.
+2. Pruned the spec down once I found the partner ([Bloodworks Northwest](https://bloodworksnw.org/eligibility-checker)) already publishes a full eligibility checklist.
 3. Generated a single-file static web tool that pre-screens donors in 30 seconds.
 4. Iterated five or six times — adding short-circuit logic, dynamic sub-questions, a Back button, fixing a real bug, deep-linking to the right drive.
 5. Wrote an automated end-to-end test, ran 24 assertions, fixed the test (not the code), and shipped.
 
+### By the numbers
+
+| ⏱ Time | 📄 Files | 📏 Code | ✅ Tests | 🚫 PII | 🛠 Build steps | 💰 Cost |
+|---|---|---|---|---|---|---|
+| 1 afternoon | 1 HTML | ~500 LOC | 24 / 24 | 0 fields | 0 | $0 |
+
 The whole thing is one HTML file, served from the PSB site at <https://punjabischoolbothell.org/programs/blood-drive/>.
 
-The interesting part isn't the code — it's the **workflow**. This piece is about that workflow, the rules that made it work, and the places where the spec earned its keep.
+The interesting part isn't the code — it's the **workflow**.
+
+> The model is fast. **The spec is the steering wheel.**
+
+## 🎯 Key Lessons at a Glance
+
+| | Takeaway |
+|---|---|
+| 💡 | Start unstructured — let the assistant impose the first structure, then react to it. |
+| 💡 | Before building, find out what the world already has. The biggest scope wins come from *not* building something. |
+| 💡 | AI assistants are excellent at writing the next change. They are *not* a substitute for clicking through your own UI. |
+| 💡 | Failing tests aren't always code bugs — read the failure before reaching for the fix. |
+| 🔧 | Every UI change gets a manual click-through before it ships. |
+| 🔧 | Constraints are more powerful than goals. Add constraints early. |
 
 ## Why a spec at all?
 
-The temptation with an AI coding assistant is to skip straight to "build me X." That works for throwaway snippets. It does not work when:
+The temptation with an AI coding assistant is to skip straight to *"build me X."* That works for throwaway snippets. It breaks down the moment the problem is fuzzy, you need to iterate ten times, or you want to push back when the model over-builds.
 
-- The problem is fuzzy and the right scope isn't obvious.
-- You're going to iterate ten times and need a stable reference.
-- Someone other than you will eventually look at this.
-- You want to push back on the model when it over-builds.
+A short spec — even one written in five minutes — is the contract you and the AI keep returning to. When the model wants to add a country picker, you point at the line that says *"keep it bare minimum"* and it complies. **Spec is the slow-changing artifact; the code is downstream.**
 
-A short spec — even one written in five minutes — gives you all four. It becomes the contract you and the AI keep returning to. When the model wants to add a country picker, you point at the line that says "keep it bare minimum" and it complies. When you change your mind, you edit the spec first, then the code. The spec is the slow-changing artifact; the code is downstream.
+## See it in action
 
-## The flow we actually used
+![Welcome screen of the pre-screening tool](./img/screen-welcome.png)
+*Welcome screen — drive details, disclaimer, single Start button.*
+
+![A question with the progress counter](./img/screen-question.png)
+*One question at a time, with progress and a Back button on every screen.*
+
+![Green result with the booking link](./img/screen-green.png)
+*Green — the only outcome that links to the Bloodworks booking page for this drive.*
+
+> 📸 *To add these images, drop PNGs into a `posts/img/` folder with the filenames above. GitHub and LinkedIn previews will render them automatically.*
+
+## The flow I actually used
 
 ### 1. Voice-drafted the problem out loud
 
@@ -41,7 +70,7 @@ The first message to Copilot was effectively a stream-of-consciousness descripti
 
 Copilot's first response was a structured proposal: a welcome screen, hard-stop questions, additional screening, Green/Yellow/Red outcomes. That became the seed of the spec.
 
-**Lesson:** Start unstructured. Let the assistant impose the first structure. Then react to it.
+> 💡 **Lesson** — Start unstructured. Let the assistant impose the first structure. Then react to it.
 
 ### 2. Wrote a v0.1 spec
 
@@ -61,7 +90,7 @@ That single fact collapsed half the spec:
 
 Out went the country picker, the medication list, the rules JSON, the analytics. The spec shrank to **five questions** that catch the most common community-specific reasons for deferral, and a "Yellow" off-ramp that says *go run the official checker*.
 
-**Lesson:** Before building, find out what the world already has. The biggest scope wins come from not building something.
+> 💡 **Lesson** — Before building, find out what the world already has. The biggest scope wins come from *not* building something.
 
 ### 4. Generated the implementation
 
@@ -85,18 +114,27 @@ Once the page existed, every change was a one-line user request that we mapped t
 
 Each request became a small diff. The spec made it obvious where each change belonged.
 
-### 6. Hit a real bug — and we found it because we clicked
+### 6. Hit a real bug — and I found it because I clicked
 
 The "Back" button worked from any normal question. But after a Red short-circuit on Question 1, Back jumped to Question 5 instead of Question 1.
 
-The cause: Red short-circuit set `state.step = queue.length`, so the Back handler's naive `step - 1` landed at the end. The fix was to derive the previous step from `history.length` (the true count of answered questions) instead of subtracting from `state.step`. Three lines.
+> 🐞 **Bug postmortem**
+> | | |
+> |---|---|
+> | **Severity** | Low — single edge case, no data loss |
+> | **Time-to-detect** | ~10 seconds of human clicking |
+> | **Detected by** | Me, not the AI |
+> | **Root cause** | Red short-circuit set `state.step = queue.length`, so the Back handler's naive `step - 1` landed at the end of the queue |
+> | **Fix size** | 3 lines |
+> | **Fix approach** | Derive previous step from `state.history.length` (the true count of answered questions) instead of subtracting from `state.step` |
+> | **Why the fix was small** | The model had preserved the `state.history` abstraction already in use for un-splicing follow-ups |
 
-Two things to call out here:
+Two things worth calling out:
 
-1. **The user found the bug, not the AI.** Copilot was happy to claim the feature worked. A human clicking around in 10 seconds caught it.
-2. **The fix was small because the model preserved the abstraction.** `state.history` already existed for un-splicing follow-up questions; we just used it as the source of truth for navigation too.
+1. **I found the bug, not the AI.** Copilot was happy to claim the feature worked. A human clicking around in 10 seconds caught it.
+2. **The fix was small because the model preserved the abstraction.** `state.history` already existed; I just used it as the source of truth for navigation too.
 
-**Lesson:** AI coding assistants are excellent at writing the next change. They are *not* a substitute for clicking through your own UI.
+> 💡 **Lesson** — AI coding assistants are excellent at writing the next change. They are *not* a substitute for clicking through your own UI.
 
 ### 7. End-to-end test, ran the suite, fixed the test
 
@@ -106,7 +144,7 @@ First run: 17 of 24 assertions passed. Seven failures all looked similar — sub
 
 We didn't change the code. We looked at the failures and noticed the assertions were case-sensitive (`Question 1 of 5`) but the CSS applied `text-transform: uppercase`, so `innerText` returned `QUESTION 1 OF 5`. Lowercase the comparisons. Re-ran. **24 of 24 passed.**
 
-**Lesson:** Failing tests aren't always code bugs. Read the failure before reaching for the fix. The model is great at writing test scaffolding but doesn't always reason about CSS-affected DOM strings.
+> 💡 **Lesson** — Failing tests aren't always code bugs. Read the failure before reaching for the fix. The model is great at writing test scaffolding but doesn't always reason about CSS-affected DOM strings.
 
 ### 8. Site integration, then ship
 
@@ -145,21 +183,21 @@ We treated every AI-produced diff like a junior dev's PR — read it, understand
 
 There's always one more feature ("Add a QR code generator! Add Punjabi! Add analytics!"). We listed them as Open Questions in the README and shipped. The drive is on June 21. The best version of this tool is the one that's live before then.
 
-## Patterns that didn't work (and what we did instead)
+## Patterns that didn't work (and what I did instead)
 
-### "Trust the model on UI correctness" — don't
+### The Trust-the-Model Fallacy
 
-We trusted the first Back-button implementation. It looked right in the code. Real clicks revealed the Q1 short-circuit bug.
+I trusted the first Back-button implementation. It looked right in the code. Real clicks revealed the Q1 short-circuit bug.
 
-**Fix:** every UI change gets a manual click-through before it ships. The model can write the test; the human still has to drive the browser.
+> 🔧 **Fix** — Every UI change gets a manual click-through before it ships. The model can write the test; the human still has to drive the browser.
 
-### "Let the model find the right scope on its own" — don't
+### The Scope-by-Default Trap
 
-The first spec was too ambitious because nothing in the conversation pushed back. Once we added the constraint *"keep it bare minimum"* and the fact *"Bloodworks already publishes a full checker"*, the model converged on the right scope immediately.
+The first spec was too ambitious because nothing in the conversation pushed back. Once I added the constraint *"keep it bare minimum"* and the fact *"Bloodworks already publishes a full checker"*, the model converged on the right scope immediately.
 
-**Fix:** Constraints are more powerful than goals. Add constraints early.
+> 🔧 **Fix** — Constraints are more powerful than goals. Add constraints early.
 
-### "One giant test at the end" — almost don't
+### The One-Giant-Test-at-the-End Anti-Pattern
 
 The end-to-end test was a great idea, but writing it after every feature was already in would have been brittle. Next time: write a tiny smoke test after the first green-path renders, then add assertions per feature.
 
@@ -211,6 +249,8 @@ The model is fast. The spec is the steering wheel.
 - **Drive:** Sikh Center of Seattle — Sunday, June 21, 2026
 
 If you run community drives and want to copy this pattern, the entire tool is one HTML file. Fork it, change the `CONFIG` block, change the five questions for your community's reality, point the schedule link at your drive, and ship.
+
+**What this cost me:** $0. ~4 hours. One Copilot subscription I already had.
 
 ---
 

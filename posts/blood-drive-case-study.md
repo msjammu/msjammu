@@ -1,5 +1,6 @@
 # Case Study — Reducing Wasted Slots at a Community Blood Drive
 
+- **My role:** Volunteer + sole developer of the pre-screening tool
 - **Organization:** Punjabi School Bothell (PSB) in partnership with the Sikh Center of Seattle
 - **Partner:** Bloodworks Northwest
 - **First deployment:** Sikh Center of Seattle blood drive — Sunday, June 21, 2026 (10:00 AM – 3:00 PM)
@@ -8,17 +9,27 @@
 
 ---
 
+## TL;DR
+
+I built a 30-second pre-screening web tool, in one afternoon, to cut wasted appointment slots at our community blood drive. Single static HTML file. No PII, no analytics, no build step. Ships from the existing GitHub Pages site, and any volunteer can update it for the next drive by editing one config block.
+
+- **Problem:** donors book, show up, and get deferred on the spot (most often for recent international travel) — wasting slots Bloodworks staff can't refill.
+- **Approach:** 5 community-specific questions with short-circuit logic and a Yellow off-ramp to Bloodworks' official checker. I deliberately did **not** re-implement Bloodworks' full ruleset.
+- **Outcome (target, June 21 drive):** higher slot utilization, lower on-site deferral rate, more pints collected per drive day.
+
+---
+
 ## 1. Background
 
-Every few months the Sikh Center of Seattle organizes a community blood donation drive in partnership with Bloodworks Northwest. The Punjabi School Bothell helps mobilize parents, families, and community members to fill the appointment slots.
+Every few months the Sikh Center of Seattle organizes a community blood donation drive in partnership with Bloodworks Northwest. The Punjabi School Bothell (where I volunteer) helps mobilize parents, families, and community members to fill the appointment slots.
 
 It is, in every sense, a community event: parents donate, students hand out water and snacks, and Bloodworks staff run the medical screening and collection on-site.
 
-## 2. The Problem
+## 2. The Problem I Set Out to Solve
 
 Despite strong sign-ups, each drive consistently **loses appointment slots** because donors show up and are then deferred on-site after Bloodworks' formal screening.
 
-Most-common reasons in this community, in order of frequency:
+From talking with past drive volunteers, the most common reasons in this community, in order of frequency, are:
 
 1. **Recent international travel to malaria-risk regions** — parents visiting **India, Pakistan, Bangladesh, Nepal, Mexico, or parts of sub-Saharan Africa**. Bloodworks defers donors for 3 months after travel to such areas (and longer for former residents).
    > Authoritative list of malaria-risk countries: [CDC Yellow Book — Malaria Information by Country](https://wwwnc.cdc.gov/travel/yellowbook/2024/preparing/malaria-risk-information-and-prophylaxis-by-country).
@@ -35,19 +46,19 @@ Impact on the drive:
 
 Bloodworks already publishes a comprehensive [60-second eligibility checklist](https://bloodworksnw.org/eligibility-checker) — but in practice donors book first and read it (or skip it) later.
 
-## 3. Constraints & Design Goals
+## 3. Constraints I Set
 
 | Constraint | Implication |
 |---|---|
-| Must not be a medical determination | Tool is a pre-flight only; final eligibility stays with Bloodworks staff on drive day. |
+| Must not be a medical determination | I built it as a pre-flight only; final eligibility stays with Bloodworks staff on drive day. |
 | Cannot collect or store health information | No login, no PII, no analytics, no server-side storage. |
-| Must work on a phone in a parking lot | Mobile-first, no build step, hosted on existing GitHub Pages site. |
-| Community has limited engineering time | Single static HTML file; volunteers can edit a config block to update drive details. |
-| Bloodworks' full rules change over time | Do **not** re-implement them — link out to Bloodworks for anything nuanced. |
+| Must work on a phone in a parking lot | Mobile-first, no build step, hosted on the existing GitHub Pages site. |
+| Community has limited engineering time | Single static HTML file; any volunteer can edit a config block to update drive details. |
+| Bloodworks' full rules change over time | I deliberately did **not** re-implement them — the tool links out to Bloodworks for anything nuanced. |
 
-> **Design rule: keep it bare minimum.** If a question is not high-frequency for our community, it does not belong in this tool.
+> **My design rule: keep it bare minimum.** If a question isn't high-frequency for our community, it doesn't belong in this tool.
 
-## 4. The Solution
+## 4. The Solution I Built
 
 A **30-second pre-flight web page** at [`punjabischoolbothell.org/programs/blood-drive/`](https://punjabischoolbothell.org/programs/blood-drive/).
 
@@ -104,17 +115,17 @@ A **Back** button is available on every question and every result screen, so a m
 
 ## 5. Implementation Notes
 
-Single static HTML file. No build step, no framework, no analytics. Uses the same Bootstrap 5 + FontAwesome CDNs as the rest of the PSB site.
+I built it as a single static HTML file. No build step, no framework, no analytics. It reuses the same Bootstrap 5 + FontAwesome CDNs as the rest of the PSB site so it visually matches without extra dependencies.
 
-Three blocks inside the page:
+I organized the page into three blocks:
 
-- **`CONFIG`** — drive name, date, time, Bloodworks scheduler URL, Bloodworks checker URL, phone. Volunteers edit this for the next drive without touching engine code.
-- **`QUESTIONS`** — array of questions. Each option carries `bad`, `level` (`red`/`yellow`), `reason`, and an optional `followUp: [...]` array for nested questions. Adding or rewording a question is data-only.
-- **Engine** — renders Welcome → walks `state.queue` (which dynamically grows as follow-ups splice in) → renders a Result. A per-step `state.history` records what each answer did (trigger pushed? how many follow-ups spliced in?) so **Back** correctly undoes both the trigger and the splice, keeping the progress counter and queue in sync.
+- **`CONFIG`** — drive name, date, time, Bloodworks scheduler URL, Bloodworks checker URL, phone. Any volunteer can edit this for the next drive without touching engine code.
+- **`QUESTIONS`** — an array of questions. Each option carries `bad`, `level` (`red`/`yellow`), `reason`, and an optional `followUp: [...]` array for nested questions. Adding or rewording a question is a data-only change.
+- **Engine** — renders Welcome → walks `state.queue` (which dynamically grows as follow-ups splice in) → renders a Result. I keep a per-step `state.history` that records what each answer did (trigger pushed? how many follow-ups spliced in?) so **Back** correctly undoes both the trigger and the splice, keeping the progress counter and queue in sync.
 
 ### Site integration
 
-A **Community** dropdown was added to the main navigation on every root page of the PSB site, with a single item linking to the pre-screening tool. Easy to add future community tools to the same menu.
+I added a **Community** dropdown to the main navigation on every root page of the PSB site, with a single item linking to the pre-screening tool, so future community tools can slot into the same menu.
 
 ### Privacy
 
@@ -136,7 +147,7 @@ A **Community** dropdown was added to the main navigation on every root page of 
 - Lower on-site deferral rate than the previous drive.
 - Higher appointment-slot utilization (booked → actually donated).
 
-## 7. What This Tool Is NOT
+## 7. What I Deliberately Did NOT Build
 
 - Not a medical determination.
 - Not a re-implementation of Bloodworks' full checklist.
@@ -144,7 +155,7 @@ A **Community** dropdown was added to the main navigation on every root page of 
 
 ## 8. Editing for Future Drives
 
-Update the `CONFIG` object near the top of the `<script>` block in the page:
+Any volunteer can update the `CONFIG` object near the top of the `<script>` block in the page:
 
 ```js
 const CONFIG = {
@@ -166,23 +177,29 @@ To add or change a question, edit the `QUESTIONS` array right below. Each option
 
 ## 9. Out of Scope (for now)
 
+Things I considered and intentionally left out:
+
 - AI chat / free-text input
 - Country-by-country travel rules (Bloodworks' checker handles this)
 - Medication database
 - Storing or analyzing donor responses
-- Account/login/appointment booking (we link out to Bloodworks)
+- Account/login/appointment booking (the tool links out to Bloodworks)
 
-## 10. Open Questions
+## 10. Open Questions I'm Tracking
 
-- [ ] Are the 5 base questions the right 5 for this community? (Ask 1–2 past drive volunteers.)
+- [ ] Are the 5 base questions the right 5 for this community? (I plan to ask 1–2 past drive volunteers.)
 - [ ] Confirm the Bloodworks phone number to publish.
 - [ ] Add a Punjabi (Gurmukhi) language toggle?
 - [ ] Print a QR code on the flyer pointing at this page.
 
-## 11. Post-Drive Follow-Up *(to be completed after June 21, 2026)*
+## 11. Post-Drive Follow-Up *(I'll fill this in after June 21, 2026)*
 
 - Pre-screenings completed: _TBD_
 - Appointment-slot utilization (booked → donated): _TBD_
 - On-site deferral rate vs. previous drive: _TBD_
 - Volunteer feedback: _TBD_
 - Changes for next drive: _TBD_
+
+---
+
+*Author: [Manpreet Jammu](https://github.com/msjammu) · [LinkedIn](https://www.linkedin.com/in/msjammu/)*
