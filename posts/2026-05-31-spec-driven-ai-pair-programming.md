@@ -60,8 +60,6 @@ A short spec — even one written in five minutes — is the contract you and th
 ![Green result with the booking link](./img/screen-green.png)
 *Green — the only outcome that links to the Bloodworks booking page for this drive.*
 
-> 📸 *To add these images, drop PNGs into a `posts/img/` folder with the filenames above. GitHub and LinkedIn previews will render them automatically.*
-
 ## The flow I actually used
 
 ### 1. Voice-drafted the problem out loud
@@ -74,7 +72,7 @@ Copilot's first response was a structured proposal: a welcome screen, hard-stop 
 
 ### 2. Wrote a v0.1 spec
 
-We turned the proposal into a `SPEC.md` with sections for Problem, Goals, Non-Goals, Users, User Flow, Functional Requirements, Tech Stack, Rollout, Open Questions. Standard PRD-lite.
+I turned the proposal into a `SPEC.md` with sections for Problem, Goals, Non-Goals, Users, User Flow, Functional Requirements, Tech Stack, Rollout, Open Questions. Standard PRD-lite.
 
 It was too ambitious. It had a country-by-country travel rule engine, optional AI chat, multi-language support, analytics, a rules JSON authored by a volunteer.
 
@@ -82,7 +80,7 @@ That was fine — drafts are allowed to be wrong. The next step is what mattered
 
 ### 3. Killed scope with one external fact
 
-Before building anything, we checked what the partner already publishes. Bloodworks Northwest hosts a [60-Second Eligibility Checklist](https://bloodworksnw.org/eligibility-checker) with the full ruleset.
+Before building anything, I checked what the partner already publishes. Bloodworks Northwest hosts a [60-Second Eligibility Checklist](https://bloodworksnw.org/eligibility-checker) with the full ruleset.
 
 That single fact collapsed half the spec:
 
@@ -102,7 +100,7 @@ Because the spec was clear about constraints — *no PII, no analytics, no build
 
 ### 5. Iterated against the spec, not the code
 
-Once the page existed, every change was a one-line user request that we mapped to a spec property:
+Once the page existed, every change was a one-line user request that I mapped to a spec property:
 
 | User request | Spec property it maps to |
 |---|---|
@@ -138,11 +136,11 @@ Two things worth calling out:
 
 ### 7. End-to-end test, ran the suite, fixed the test
 
-Before pushing, we asked Copilot to write and run an end-to-end test using the browser tooling. It generated a Playwright script that covered ten user journeys: Green, Yellow, Red on each hard-stop position, the travel sub-chain with all three malaria answers, Back after a Red short-circuit, mid-flow Back un-splicing follow-ups, and Start Over.
+Before pushing, I asked Copilot to write and run an end-to-end test using the browser tooling. It generated a Playwright script that covered ten user journeys: Green, Yellow, Red on each hard-stop position, the travel sub-chain with all three malaria answers, Back after a Red short-circuit, mid-flow Back un-splicing follow-ups, and Start Over.
 
 First run: 17 of 24 assertions passed. Seven failures all looked similar — substring checks on the progress counter.
 
-We didn't change the code. We looked at the failures and noticed the assertions were case-sensitive (`Question 1 of 5`) but the CSS applied `text-transform: uppercase`, so `innerText` returned `QUESTION 1 OF 5`. Lowercase the comparisons. Re-ran. **24 of 24 passed.**
+I didn't change the code. I looked at the failures and noticed the assertions were case-sensitive (`Question 1 of 5`) but the CSS applied `text-transform: uppercase`, so `innerText` returned `QUESTION 1 OF 5`. Lowercase the comparisons. Re-ran. **24 of 24 passed.**
 
 > 💡 **Lesson** — Failing tests aren't always code bugs. Read the failure before reaching for the fix. The model is great at writing test scaffolding but doesn't always reason about CSS-affected DOM strings.
 
@@ -163,7 +161,7 @@ Total elapsed time: an afternoon. Total lines of net new code: ~500.
 
 The single most valuable line in the spec was a literal sentence: *"Design rule: keep it bare minimum. Anything not high-frequency for our community is routed to Bloodworks rather than re-implemented here."*
 
-We quoted this back to the model — implicitly — every time it offered to add complexity. The rule was a fence the model respected.
+I quoted this back to the model — implicitly — every time it offered to add complexity. The rule was a fence the model respected.
 
 ### Spec-first, code-second, on every change
 
@@ -177,11 +175,11 @@ Putting the drive date, time, scheduler URL, Bloodworks links, and phone in a si
 
 ### Reading the model's diffs
 
-We treated every AI-produced diff like a junior dev's PR — read it, understand it, accept or push back. A few times the model added a helper or an abstraction we didn't need; calling that out (and citing the implementation-discipline principle) kept the file lean.
+I treated every AI-produced diff like a junior dev's PR — read it, understand it, accept or push back. A few times the model added a helper or an abstraction I didn't need; calling that out (and citing the implementation-discipline principle) kept the file lean.
 
 ### Stopping when done
 
-There's always one more feature ("Add a QR code generator! Add Punjabi! Add analytics!"). We listed them as Open Questions in the README and shipped. The drive is on June 21. The best version of this tool is the one that's live before then.
+There's always one more feature ("Add a QR code generator! Add Punjabi! Add analytics!"). I listed them as Open Questions in the README and shipped. The drive is on June 21. The best version of this tool is the one that's live before then.
 
 ## Patterns that didn't work (and what I did instead)
 
@@ -201,17 +199,17 @@ The first spec was too ambitious because nothing in the conversation pushed back
 
 The end-to-end test was a great idea, but writing it after every feature was already in would have been brittle. Next time: write a tiny smoke test after the first green-path renders, then add assertions per feature.
 
-## What the spec did for us, concretely
+## What the spec did for me, concretely
 
-Without the spec we would have:
+Without the spec I would have:
 
-- Built a country picker we didn't need.
+- Built a country picker I didn't need.
 - Reimplemented half of Bloodworks' rules and had to maintain them.
 - Stored donor responses "for analytics" without thinking about PII.
 - Skipped the disclaimer.
 - Probably forgotten to handle the Back-after-Red case at all.
 
-With the spec we:
+With the spec I:
 
 - Said no to country pickers in seconds, not days.
 - Pointed at Bloodworks for everything past the bare minimum.
