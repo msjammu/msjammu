@@ -30,6 +30,8 @@ The whole thing is one HTML file, served from the PSB site at <https://punjabisc
 
 The interesting part isn't the code — it's the **workflow**.
 
+> The afternoon was the coding session. Years of donating blood myself — and watching family and community members get turned away on drive day for the same handful of reasons — is what made the spec correct in five minutes.
+
 > The model is fast. **The spec is the steering wheel.**
 
 ## 🎯 Key Lessons at a Glance
