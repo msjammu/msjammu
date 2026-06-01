@@ -3,7 +3,7 @@
 *A field report on using GitHub Copilot's agent mode to take a community problem from a vague description to a deployed tool — with the spec doing most of the heavy lifting.*
 
 **Project:** [Blood Drive Pre-Screening Tool](https://punjabischoolbothell.org/programs/blood-drive/) for the Sikh Center of Seattle (built for [Punjabi School Bothell](https://punjabischoolbothell.org/))
-**Source & case study:** [github.com/msjammu/PSB/tree/main/programs/blood-drive](https://github.com/msjammu/PSB/tree/main/programs/blood-drive)
+**Case study:** [Reducing Wasted Slots at a Community Blood Drive](./blood-drive-case-study.md)
 **Stack:** One static HTML file. No build step. No framework. No analytics.
 
 ---
@@ -18,7 +18,7 @@ Our community blood drive kept losing appointment slots to donors who were ineli
 4. Iterated five or six times — adding short-circuit logic, dynamic sub-questions, a Back button, fixing a real bug, deep-linking to the right drive.
 5. Wrote an automated end-to-end test, ran 24 assertions, fixed the test (not the code), and shipped.
 
-The whole thing is one HTML file: [`programs/blood-drive/index.html`](https://github.com/msjammu/PSB/blob/main/programs/blood-drive/index.html).
+The whole thing is one HTML file, served from the PSB site at <https://punjabischoolbothell.org/programs/blood-drive/>.
 
 The interesting part isn't the code — it's the **workflow**. This piece is about that workflow, the rules that made it work, and the places where the spec earned its keep.
 
@@ -206,7 +206,7 @@ The model is fast. The spec is the steering wheel.
 ### About this project
 
 - **Live tool:** <https://punjabischoolbothell.org/programs/blood-drive/>
-- **Source & case study:** [github.com/msjammu/PSB/tree/main/programs/blood-drive](https://github.com/msjammu/PSB/tree/main/programs/blood-drive)
+- **Case study:** [Reducing Wasted Slots at a Community Blood Drive](./blood-drive-case-study.md)
 - **Partner:** [Bloodworks Northwest](https://bloodworksnw.org/)
 - **Drive:** Sikh Center of Seattle — Sunday, June 21, 2026
 
