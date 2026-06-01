@@ -12,3 +12,9 @@
 </p>
 
 Join in AI journey by checking out [BrightBites](https://msjammu.github.io/BrightBites/)
+
+---
+
+### ✍️ Writing
+
+- **[Shipping a Real Community Tool in an Afternoon with Spec-Driven AI Pair-Programming](posts/2026-05-31-spec-driven-ai-pair-programming.md)** *(May 2026)* — A field report on using GitHub Copilot's agent mode + a one-page spec to build and ship a 30-second blood-donation pre-screening tool for the Sikh Center of Seattle community drive. Covers the workflow, the patterns that worked, the patterns that didn't, and the reusable recipe. [Live tool ↗](https://punjabischoolbothell.org/programs/blood-drive/) · [Source ↗](https://github.com/msjammu/PSB/tree/main/programs/blood-drive)
